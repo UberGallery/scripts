@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Set some default variables
-WORKINGDIR=$(pwd)
-RELEASEDIR=$WORKINGDIR/releases
-SOURCEDIR=/tmp/ubergallery-source
-GITDIR=$SOURCEDIR/.git
+WORKINGDIR="$(pwd)"
+RELEASEDIR="$WORKINGDIR/releases"
+SOURCEDIR="/tmp/ubergallery-source"
+GITDIR="$SOURCEDIR/.git"
 
 # Get updated source from Github
 if [ -d $GITDIR ]; then
@@ -19,9 +19,9 @@ else
 fi
 
 # Set version info variables
-VERSION=$(cat $SOURCEDIR/resources/UberGallery.php | grep "const VERSION" | awk -F \' '{print $(NF-1)}')
-RELEASENAME=UberGallery-v$VERSION
-FINALDIR=/tmp/$RELEASENAME
+VERSION="$(cat $SOURCEDIR/resources/UberGallery.php" | grep "const VERSION" | awk -F \' '{print $(NF-1)}')
+RELEASENAME="UberGallery-v$VERSION"
+FINALDIR="/tmp/$RELEASENAME"
 
 # Remove all git files
 find $SOURCEDIR -name ".git*" -exec rm -rf {} \;
