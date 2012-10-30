@@ -6,20 +6,16 @@ RELEASEDIR="$WORKINGDIR/releases"
 SOURCEDIR="/tmp/ubergallery-source"
 GITDIR="$SOURCEDIR/.git"
 
-# Get updated source from Github
-if [ -d $GITDIR ]; then
-    cd  $SOURCEDIR
-    git pull -q origin master
-    cd  $WORKINGDIR
-else
-    if [ -d $SOURCEDIR ]; then
-        rm $SOURCEDIR
-    fi
-    git clone --recursive -q git://github.com/UberGallery/UberGallery.git $SOURCEDIR
+# Remove source dir if it already exists
+if [ -d $SOURCEDIR ]; then
+    rm -rfv $SOURCEDIR
 fi
 
+# Get updated source from Github
+git clone --recursive -q git://github.com/UberGallery/UberGallery.git $SOURCEDIR
+
 # Set version info variables
-VERSION="$(cat $SOURCEDIR/resources/UberGallery.php" | grep "const VERSION" | awk -F \' '{print $(NF-1)}')
+VERSION=$(cat "$SOURCEDIR/resources/UberGallery.php" | grep "const VERSION" | awk -F \' '{print $(NF-1)}')
 RELEASENAME="UberGallery-v$VERSION"
 FINALDIR="/tmp/$RELEASENAME"
 
@@ -49,4 +45,3 @@ tar -czf $RELEASEDIR/$RELEASENAME.tar.gz $RELEASENAME --overwrite
 
 # Make the .zip release file
 zip -qr $RELEASEDIR/$RELEASENAME.zip $RELEASENAME
-
