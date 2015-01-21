@@ -1,27 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -o errexit -o pipefail
+
+# Get script running diectory
+SCRIPT_DIR="$(dirname $(readlink -f ${0}))"
 
 # Set some variables
 ARCHIVE_URL="http://github.com/downloads/UberGallery/scripts/sample-images.tar.gz"
-TEMP_DIR="/tmp"
-FILE_NAME="$TEMP_DIR/sample-images.tar.gz"
-IMAGE_DIR="$(dirname $(pwd))/gallery-images"
+IMAGES_DIR="$(dirname ${SCRIPT_DIR})/gallery-images"
 
-# Verify /tmp directory permissions
-if [ ! -r $TEMP_DIR ] || [ ! -w $TEMP_DIR ]; then
-    echo "ERROR: $TEMP_DIR does not exist or you don't have permission to access it"
-    exit 1
-fi
+## Check if image archive exists
+FILE_EXISTS="$(wget --spider -qO /dev/null ${ARCHIVE_URL} && echo 'true' || echo 'false')"
 
-# Verify gallery image directory permissions
-if [ ! -r $IMAGE_DIR ] || [ ! -w $IMAGE_DIR ]; then
-    echo "ERROR: $IMAGE_DIR does not exist or you don't have permission to access it"
-    exit 1
+## Error on non-existent image archive
+if [[ "${FILE_EXISTS}" == false ]]; then
+    echo "ERROR: Unable to locate image archive at ${ARCHIVE_URL}"; exit 1
 fi
 
 # Fetch the archive
-echo "Downloading image archive from $ARCHIVE_URL"
-wget $ARCHIVE_URL --progress=dot:binary -O $FILE_NAME |& grep "%"
-
-# Extract the archive
-echo "Extracting images to $IMAGE_DIR"
-tar -xzvf $FILE_NAME -C $IMAGE_DIR
+echo "Downloading image archive from ${ARCHIVE_URL} and extracting to ${IMAGES_DIR}"
+wget -qO- ${ARCHIVE_URL} | tar -xzv -C ${IMAGES_DIR}
