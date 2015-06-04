@@ -6,7 +6,7 @@ SCRIPT_DIR="$(dirname $(readlink -f ${0}))"
 
 # Set some default variables
 RELEASEDIR="${SCRIPT_DIR}/releases"
-SOURCEDIR="$(mktemp -d)"
+SOURCEDIR="$(mktemp -dt ubergallery.XXXXXXXX)"
 
 # Get updated source from Github
 git clone --recursive -q git://github.com/UberGallery/UberGallery.git ${SOURCEDIR}
