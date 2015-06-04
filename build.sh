@@ -6,23 +6,18 @@ SCRIPT_DIR="$(dirname $(readlink -f ${0}))"
 
 # Set some default variables
 RELEASEDIR="${SCRIPT_DIR}/releases"
-SOURCEDIR="/tmp/ubergallery-source"
-
-# Remove source dir if it already exists
-if [[ -d "${SOURCEDIR}" ]]; then
-    rm -rf ${SOURCEDIR}
-fi
+SOURCEDIR="$(mktemp -d)"
 
 # Get updated source from Github
 git clone --recursive -q git://github.com/UberGallery/UberGallery.git ${SOURCEDIR}
 
 # Set version info variables
-VERSION=$(cat "${SOURCEDIR}/resources/UberGallery.php" | grep "const VERSION" | awk -F \' '{ print $(NF-1) }')
+VERSION="$(grep 'const VERSION' ${SOURCEDIR}/resources/UberGallery.php | awk -F \' '{ print $(NF-1) }')"
 RELEASENAME="UberGallery-v${VERSION}"
 FINALDIR="/tmp/${RELEASENAME}"
 
 # Remove all git files
-find ${SOURCEDIR}/* -name ".git*" -exec rm -rfv "{}" \;
+find ${SOURCEDIR}/* -name ".git*" -delete
 
 # Remove scripts directory
 rm -rf ${SOURCEDIR}/scripts
@@ -49,3 +44,6 @@ tar -czf ${RELEASEDIR}/${RELEASENAME}.tar.gz ${RELEASENAME} --overwrite
 zip -qr ${RELEASEDIR}/${RELEASENAME}.zip ${RELEASENAME}
 
 popd
+
+# Cleanup
+rm -rf ${FINALDIR}
