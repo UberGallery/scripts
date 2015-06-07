@@ -17,7 +17,9 @@ RELEASENAME="UberGallery-v${VERSION}"
 FINALDIR="/tmp/${RELEASENAME}"
 
 # Remove all git files
-find ${SOURCEDIR} -name ".git*" -delete
+find ${SOURCEDIR} -name '.git*' | while read LINE; do
+    [[ -e ${LINE} ]] && rm -rfv ${LINE}
+done
 
 # Remove scripts directory
 rm -rf ${SOURCEDIR}/scripts
