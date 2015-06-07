@@ -16,8 +16,10 @@ VERSION="$(grep 'const VERSION' ${SOURCEDIR}/resources/UberGallery.php | awk -F 
 RELEASENAME="UberGallery-v${VERSION}"
 FINALDIR="/tmp/${RELEASENAME}"
 
+exit
+
 # Remove all git files
-find ${SOURCEDIR}/* -name ".git*" -delete
+find ${SOURCEDIR} -name ".git*" -delete
 
 # Remove scripts directory
 rm -rf ${SOURCEDIR}/scripts
